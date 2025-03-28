@@ -1,4 +1,4 @@
-## # Kravchuk_bird_projet_ECN
+## Kravchuk_bird_projet_ECN
 
 ## Contexte
 
