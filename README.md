@@ -1,5 +1,3 @@
-## Kravchuk_bird_projet_ECN
-
 ## Contexte
 
 Le changement climatique, la dégradation des écosystèmes naturels et les activités humaines représentent des menaces majeures pour de nombreuses espèces aviaires.
