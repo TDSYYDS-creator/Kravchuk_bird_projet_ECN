@@ -38,7 +38,7 @@ Sur cette base, nous avons ajouté de nouvelles fonctions et modules pour pouvoi
 
 ---
 
-### Fichiers principaux
+### Fichiers ajoutés
 
 - `sliding_window_detection.py`  
   → Un détecteur basé sur **fenêtre glissante** est conçu pour parcourir les **points centraux** des clips audio extraits du jeu de données **BirdVox-70k**,  
@@ -64,12 +64,24 @@ Sur cette base, nous avons ajouté de nouvelles fonctions et modules pour pouvoi
 
 ##  Données
 
-Nous remercions chaleureusement **Monsieur Vincent Lostanlen** et ses collaborateurs  
-pour la mise à disposition du jeu de données BirdVox-70k :  
-🔗 [https://zenodo.org/records/1226427](https://zenodo.org/records/1226427)
+(1) Nous remercions chaleureusement **Monsieur Vincent Lostanlen** et ses collaborateurs  
+pour la mise à disposition du jeu de données BirdVox-70k : 🔗 [https://zenodo.org/records/1226427](https://zenodo.org/records/1226427)
 
 Le lien ci-dessus contient une description complète de la structure du jeu de données,  
 ainsi que des informations sur la taille et le format des fichiers `.hdf5`.
+
+(2) Nous avons mis à disposition **quatre dossiers** : 🔗 [https://drive.google.com/drive/folders/18cDxAXZJbh4XTTbLQEua-LANR5nROBO3?usp=sharing](https://drive.google.com/drive/folders/18cDxAXZJbh4XTTbLQEua-LANR5nROBO3?usp=sharing)
+
+- Trois d'entre eux contiennent des bruits générés par **simulation de Monte Carlo**, avec des fenêtres de longueur :
+  - `samples_256`
+  - `samples_512`
+  - `samples_1024`
+
+- Le quatrième dossier, `sample_real_neg_256`, contient des bruits **réels**, extraits à partir d'enregistrements annotés `0` (c’est-à-dire sans chant d’oiseau, uniquement du bruit ambiant naturel).
+
+Cela permet de comparer la distribution des valeurs de la **fonction de Ripley** entre :
+- les bruits générés artificiellement,
+- et les bruits réels issus de l’environnement.
 
 ---
 
@@ -79,5 +91,31 @@ ainsi que des informations sur la taille et le format des fichiers `.hdf5`.
 2. Dans le répertoire principal du projet, créez un dossier nommé `data/`,  
    situé au même niveau que les dossiers `csv/`, `demo/`, `include/`, etc. ;
 3. Placez les fichiers `.hdf5` téléchargés depuis Zenodo dans ce dossier `data/`.
+4. Placez le dossier choisi (`samples_256`, `samples_512`, etc.) dans le **répertoire principal** du projet (au même niveau que `csv`, `demo`, `scripts`, etc.)  
+5. Renommez ce dossier en `samples`, pour que les scripts puissent l’utiliser automatiquement.
 
-Ensuite, vous pouvez exécuter les notebooks ou les scripts comme indiqué dans la section “Utilisation”.
+💡 **Exemple** :  
+Si vous souhaitez tester avec une **fenêtre de 1024**, prenez le dossier `samples_1024`  
+et **supprimez le suffixe `_1024`** → cela devient `samples`.
+
+Ensuite, vous pouvez exécuter le notebook `detection-test-Kravchuk-zeros.ipynb`, et générer des données ainsi que des figures qui vous intéressent.
+
+### Personnalisation de la génération de bruit
+
+Vous êtes encouragé à modifier les paramètres et tester d’autres générations de bruit.
+
+Dans le notebook `detection-test-Kravchuk-zeros.ipynb`, vous pouvez activer l’une des lignes suivantes pour générer les échantillons vous-même :
+
+```python
+# Génération de bruit de type Monte Carlo :
+alpha, m, folder = noise_samples(N=512, m=m, time_t=time_t, folder='samples')
+
+# Génération de bruit à partir de vrais extraits négatifs :
+alpha, m, folder = noise_samples_from_real_negatives(
+    h5_path='../data/BirdVox-70k_unit01.hdf5',
+    keys_negative=keys_negative,
+    N=256,
+    m=199,
+    time_t=np.arange(257),  # en accord avec ton STFT
+    folder='samples'
+)
